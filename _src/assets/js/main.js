@@ -5,10 +5,50 @@ const searchInputEl = document.querySelector('.search__input');
 const searchResponseEl = document.querySelector('.results-section');
 const favoriteSectionEl = document.querySelector('.favorite-section');
 
-window.localStorage.clear();
-
 let search = '';
 let favorites = [];
+
+console.log(localStorage.favorites);
+
+function favoriteCloseButton(event) {
+  const removedId = document.getElementById(`${event.currentTarget.id}`);
+
+  const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
+
+  favorites.splice(indexOfRemoved-1, 1);
+
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  event.currentTarget.parentElement.remove();
+}
+
+if (localStorage.favorites) {
+  favorites = JSON.parse(localStorage.getItem('favorites'));
+  for (const series of favorites) {
+    const favoriteListItem = document.createElement('li');
+    favoriteListItem.classList.add('favorite');
+    const favoriteTitleEl = document.createElement('h2');
+    const favoriteTitle = document.createTextNode(series.name);
+    favoriteTitleEl.appendChild(favoriteTitle);
+
+    const favoriteImg = document.createElement('img');
+    favoriteImg.setAttribute('style', `background-image: ${series.img}`);
+    favoriteImg.classList.add('results-section__image');
+
+    favoriteListItem.appendChild(favoriteTitleEl);
+    favoriteListItem.appendChild(favoriteImg);
+    favoriteListItem.setAttribute('id', series.id);
+    favoriteSectionEl.appendChild(favoriteListItem);
+
+    const favoriteEraseButton = document.createElement('i');
+    favoriteEraseButton.classList.add('fas');
+    favoriteEraseButton.classList.add('fa-times-circle');
+    favoriteEraseButton.classList.add('favorite-erase');
+    favoriteListItem.appendChild(favoriteEraseButton);
+
+    favoriteEraseButton.addEventListener('click', favoriteCloseButton);
+
+  }
+}
 
 function cardClickFavoriteHandler(event) {
 
@@ -36,12 +76,10 @@ function cardClickFavoriteHandler(event) {
       img: event.currentTarget.firstChild.nextElementSibling.style.backgroundImage,
     };
 
-    console.log(myFavoriteSerie);
     favorites.push(myFavoriteSerie);
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
   } else if (event.currentTarget.classList.contains('results-section__card--selected') === true) {
-    console.log(event.currentTarget);
     event.currentTarget.classList.remove('results-section__card--selected');
     
     const removedId = document.getElementById(`${event.currentTarget.firstChild.id}`);
@@ -49,10 +87,8 @@ function cardClickFavoriteHandler(event) {
     const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
 
     favorites.splice(indexOfRemoved-1, 1);
-    
     localStorage.setItem('favorites', JSON.stringify(favorites));
     removedId.remove();
-
   }
 }
 
