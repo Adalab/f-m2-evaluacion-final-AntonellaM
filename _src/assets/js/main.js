@@ -11,15 +11,20 @@ let search = '';
 let favorites = [];
 
 function cardClickFavoriteHandler(event) {
+
   if (event.currentTarget.classList.contains('results-section__card--selected') === false) {
     event.currentTarget.classList.add('results-section__card--selected');
+
     const favoriteListItem = document.createElement('li');
+
     const favoriteTitleEl = document.createElement('h2');
     const favoriteTitle = document.createTextNode(event.currentTarget.firstChild.innerHTML);
     favoriteTitleEl.appendChild(favoriteTitle);
+
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
     favoriteImg.classList.add('results-section__image');
+
     favoriteListItem.appendChild(favoriteTitleEl);
     favoriteListItem.appendChild(favoriteImg);
     favoriteListItem.setAttribute('id', event.currentTarget.firstChild.id);
@@ -36,15 +41,18 @@ function cardClickFavoriteHandler(event) {
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
   } else if (event.currentTarget.classList.contains('results-section__card--selected') === true) {
+    console.log(event.currentTarget);
     event.currentTarget.classList.remove('results-section__card--selected');
+    
     const removedId = document.getElementById(`${event.currentTarget.firstChild.id}`);
+
+    const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
+
+    favorites.splice(indexOfRemoved-1, 1);
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
     removedId.remove();
 
-
-
-    const cardPosition = favorites.indexOf(event.currentTarget.firstChild.id);
-    favorites.splice(cardPosition-1);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
   }
 }
 
