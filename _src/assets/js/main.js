@@ -8,8 +8,6 @@ const favoriteSectionEl = document.querySelector('.favorite-section');
 let search = '';
 let favorites = [];
 
-console.log(localStorage.favorites);
-
 function favoriteCloseButton(event) {
   const removedId = document.getElementById(`${event.currentTarget.id}`);
 
@@ -41,12 +39,11 @@ if (localStorage.favorites) {
 
     const favoriteEraseButton = document.createElement('i');
     favoriteEraseButton.classList.add('fas');
-    favoriteEraseButton.classList.add('fa-times-circle');
+    favoriteEraseButton.classList.add('fa-times');
     favoriteEraseButton.classList.add('favorite-erase');
     favoriteListItem.appendChild(favoriteEraseButton);
 
     favoriteEraseButton.addEventListener('click', favoriteCloseButton);
-
   }
 }
 
@@ -56,7 +53,7 @@ function cardClickFavoriteHandler(event) {
     event.currentTarget.classList.add('results-section__card--selected');
 
     const favoriteListItem = document.createElement('li');
-
+    favoriteListItem.classList.add('favorite');
     const favoriteTitleEl = document.createElement('h2');
     const favoriteTitle = document.createTextNode(event.currentTarget.firstChild.innerHTML);
     favoriteTitleEl.appendChild(favoriteTitle);
@@ -64,6 +61,14 @@ function cardClickFavoriteHandler(event) {
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
     favoriteImg.classList.add('results-section__image');
+
+    const favoriteEraseButton = document.createElement('i');
+    favoriteEraseButton.classList.add('fas');
+    favoriteEraseButton.classList.add('fa-times');
+    favoriteEraseButton.classList.add('favorite-erase');
+    favoriteListItem.appendChild(favoriteEraseButton);
+
+    favoriteEraseButton.addEventListener('click', favoriteCloseButton);
 
     favoriteListItem.appendChild(favoriteTitleEl);
     favoriteListItem.appendChild(favoriteImg);
@@ -94,6 +99,7 @@ function cardClickFavoriteHandler(event) {
 
 function printSeriesTitle(seriesObject) {
   const seriesCard = document.createElement('div');
+  seriesCard.classList.add('results-section__card');
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);
   titleEl.appendChild(title);
@@ -127,6 +133,9 @@ function searchSeries(title) {
     .then(response => response.json())
     .then(function (data) {
       searchResponseEl.innerHTML = '';
+      const titleResultsEl = document.createElement('h2');
+      const titleResults = document.createTextNode('Resultados');
+      titleResultsEl.appendChild(titleResults);
 
       for (const serie of data) {
         printSeriesTitle(serie.show);

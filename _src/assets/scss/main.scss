@@ -1,8 +1,14 @@
 @import 'core/settings';
+@import 'components/series-card';
+@import 'layout/main-page';
 @import 'layout/results-section';
 
+*, *::before, *::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 
 body {
-	background: url('../images/logo-adalab-80px.png') center center no-repeat $color-white;
 	height: 100vh;
 }
