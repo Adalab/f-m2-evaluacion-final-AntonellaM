@@ -6,14 +6,21 @@ const searchResponseEl = document.querySelector('.results-section');
 
 let search;
 
+function cardClickFavoriteHandler(event) {
+    console.log('Listener works');
+}
+
 function printSeriesTitle(seriesObject) {
+  const seriesCard = document.createElement('div');
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);
   titleEl.appendChild(title);
-  searchResponseEl.appendChild(titleEl);
+  seriesCard.appendChild(titleEl);
+  searchResponseEl.appendChild(seriesCard);
+  printSeriesImage(seriesCard, seriesObject);
 }
 
-function printSeriesImage(seriesObject) {
+function printSeriesImage(seriesCard, seriesObject) {
   console.log(seriesObject.image);
   const imageEl = document.createElement('img');
   imageEl.classList.add('results-section__image');
@@ -23,7 +30,14 @@ function printSeriesImage(seriesObject) {
   } else {
     imageEl.setAttribute('style', `background-image: url(${seriesObject.image.medium})`);
   }
-  searchResponseEl.appendChild(imageEl);
+  seriesCard.appendChild(imageEl);
+  seriesCard.classList.add('results-section__card');
+
+  const arraySeriesCard = document.querySelectorAll('.results-section__card');
+  
+  for (const card of arraySeriesCard) {
+      card.addEventListener('click', cardClickFavoriteHandler);
+  }
 }
 
 function searchSeries(title) {
@@ -32,7 +46,6 @@ function searchSeries(title) {
     .then(function (data) {
       for (const serie of data) {
         printSeriesTitle(serie.show);
-        printSeriesImage(serie.show);
       }
     });
 }
