@@ -4,17 +4,36 @@ const searchButtonEl = document.querySelector('.search__button');
 const searchInputEl = document.querySelector('.search__input');
 const searchResponseEl = document.querySelector('.results-section');
 
-let search;
+let search = '';
+let favorites = [];
+
+function cardClickFavoriteHandler(event) {
+  console.log('Listener works', event.currentTarget);
+  const selectedCard = event.currentTarget;
+  selectedCard.classList.toggle('results-section__card--selected');
+  if (selectedCard.classList.contains('results-section__card--selected')) {
+    favorites.push(selectedCard.innerHTML);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+  } else {
+    const cardPosition = favorites.indexOf(selectedCard.innerHTML);
+    favorites.splice(cardPosition, cardPosition, '');
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+  }
+}
 
 function printSeriesTitle(seriesObject) {
+  const seriesCard = document.createElement('div');
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);
   titleEl.appendChild(title);
-  searchResponseEl.appendChild(titleEl);
+  seriesCard.appendChild(titleEl);
+  searchResponseEl.appendChild(seriesCard);
+  printSeriesImage(seriesCard, seriesObject);
 }
 
-function printSeriesImage(seriesObject) {
-  console.log(seriesObject.image);
+function printSeriesImage(seriesCard, seriesObject) {
   const imageEl = document.createElement('img');
   imageEl.classList.add('results-section__image');
   const defaultImg = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
@@ -23,7 +42,14 @@ function printSeriesImage(seriesObject) {
   } else {
     imageEl.setAttribute('style', `background-image: url(${seriesObject.image.medium})`);
   }
-  searchResponseEl.appendChild(imageEl);
+  seriesCard.appendChild(imageEl);
+  seriesCard.classList.add('results-section__card');
+
+  const arraySeriesCard = document.querySelectorAll('.results-section__card');
+  
+  for (const card of arraySeriesCard) {
+    card.addEventListener('click', cardClickFavoriteHandler);
+  }
 }
 
 function searchSeries(title) {
@@ -32,7 +58,6 @@ function searchSeries(title) {
     .then(function (data) {
       for (const serie of data) {
         printSeriesTitle(serie.show);
-        printSeriesImage(serie.show);
       }
     });
 }
