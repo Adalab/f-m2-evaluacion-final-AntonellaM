@@ -1,4 +1,16 @@
-.results-section__image {
-    height: 295px;
-    width: 210px;
+.results-section {
+
+    &__card {
+        &--selected {
+            background-color: coral;
+            color: green;
+        }
+    }
+
+    &__image {
+        height: 295px;
+        width: 210px;
+    }
 }
+
+    
