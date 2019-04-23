@@ -15,7 +15,9 @@ function favoriteCloseButton(event) {
   localStorage.setItem('favorites', JSON.stringify(favorites));
   event.currentTarget.parentElement.remove();
   const removeSelectedFavorite = document.getElementById(`${removedDataId}`);
-  removeSelectedFavorite.classList.remove('results-section__card--selected');
+  if (removeSelectedFavorite){
+    removeSelectedFavorite.classList.remove('results-section__card--selected');
+  }
 }
 
 if (localStorage.favorites) {
@@ -92,8 +94,9 @@ function cardClickFavoriteHandler(event) {
     const removedId = document.getElementById(`${event.currentTarget.id}`);
 
     const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
+    console.log(indexOfRemoved);
 
-    favorites.splice(indexOfRemoved-1, 1);
+    favorites.splice(indexOfRemoved, 1);
     localStorage.setItem('favorites', JSON.stringify(favorites));
     const favoriteToRemove = document.querySelector(`[data-id='${event.currentTarget.id}']`);
 
