@@ -1,7 +1,9 @@
-@import 'core/settings';
+@import 'core/variables';
+@import 'core/mixins';
+
 @import 'components/series-card';
+@import 'components/favorite-card';
 @import 'layout/main-page';
-@import 'layout/results-section';
 
 *, *::before, *::after {
 	margin: 0;
@@ -11,4 +13,6 @@
 
 body {
 	height: 100vh;
+	font-family: $font-general;
+	font-weight: normal;
 }

@@ -2,8 +2,8 @@
 
 const searchButtonEl = document.querySelector('.search__button');
 const searchInputEl = document.querySelector('.search__input');
-const searchResponseEl = document.querySelector('.results-section');
-const favoriteSectionEl = document.querySelector('.favorite-section');
+const searchResponseEl = document.querySelector('.results-list');
+const favoriteSectionEl = document.querySelector('.favorite-list');
 
 let search = '';
 let favorites = [];
@@ -30,7 +30,7 @@ if (localStorage.favorites) {
 
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${series.img}`);
-    favoriteImg.classList.add('results-section__image');
+    favoriteImg.classList.add('favorite-section__image');
 
     favoriteListItem.appendChild(favoriteTitleEl);
     favoriteListItem.appendChild(favoriteImg);
@@ -40,6 +40,7 @@ if (localStorage.favorites) {
     const favoriteEraseButton = document.createElement('i');
     favoriteEraseButton.classList.add('fas');
     favoriteEraseButton.classList.add('fa-times');
+    favoriteEraseButton.classList.add('fa-sm');
     favoriteEraseButton.classList.add('favorite-erase');
     favoriteListItem.appendChild(favoriteEraseButton);
 
@@ -60,7 +61,7 @@ function cardClickFavoriteHandler(event) {
 
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
-    favoriteImg.classList.add('results-section__image');
+    favoriteImg.classList.add('favorite-section__image');
 
     const favoriteEraseButton = document.createElement('i');
     favoriteEraseButton.classList.add('fas');
@@ -98,7 +99,7 @@ function cardClickFavoriteHandler(event) {
 }
 
 function printSeriesTitle(seriesObject) {
-  const seriesCard = document.createElement('div');
+  const seriesCard = document.createElement('li');
   seriesCard.classList.add('results-section__card');
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);

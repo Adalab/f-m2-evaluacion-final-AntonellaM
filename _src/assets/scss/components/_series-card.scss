@@ -1,4 +1,4 @@
-.favorite, .results-section__card {
+.results-section__card {
     height: 400px;
     width: 250px;
     border-radius: 5px;
@@ -11,17 +11,19 @@
     border: 1px solid lightgrey;
     margin: 10px;
 
+
+    &--selected {
+        background-color: $color-selected;
+        color: $color-white;
+    }
+
     h2 {
         margin-top: 10px;
     }
 
-    .favorite-erase {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-
     .results-section__image {
         margin-top: 25px;
+        height: 295px;
+        width: 210px;
     }
 }
