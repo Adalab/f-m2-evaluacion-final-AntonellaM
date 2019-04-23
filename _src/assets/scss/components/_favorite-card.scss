@@ -3,18 +3,19 @@
     height: 200px;
     width: 120px;
 
-    h2 {
-        margin-top: 10px;
+    &__title {
+        margin: 10px 0;
         font-size: 20px;
+        text-align: center;
     }
 
-    .favorite-erase {
+    &-erase {
         position: absolute;
         top: 7px;
         right: 7px;
     }
 
-    .favorite-section__image {
+    &__image {
         margin-top: 25px;
         height: 120px;
         width: 80px;

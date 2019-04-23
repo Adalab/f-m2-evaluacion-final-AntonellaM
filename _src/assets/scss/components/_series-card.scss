@@ -11,17 +11,16 @@
     border: 1px solid lightgrey;
     margin: 10px;
 
-
     &--selected {
         background-color: $color-selected;
         color: $color-white;
     }
 
-    h2 {
+    .results-card__title {
         margin-top: 10px;
     }
 
-    .results-section__image {
+    .results-card__image {
         margin-top: 25px;
         height: 295px;
         width: 210px;

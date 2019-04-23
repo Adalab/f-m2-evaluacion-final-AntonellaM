@@ -9,14 +9,13 @@ let search = '';
 let favorites = [];
 
 function favoriteCloseButton(event) {
-  const removedId = document.getElementById(`${event.currentTarget.id}`);
-
-  const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
-
-  favorites.splice(indexOfRemoved-1, 1);
-
+  const removedDataId = event.currentTarget.parentElement.dataset.id;
+  const indexOfRemoved = favorites.findIndex(i => i.id === removedDataId);
+  favorites.splice(indexOfRemoved, 1);
   localStorage.setItem('favorites', JSON.stringify(favorites));
   event.currentTarget.parentElement.remove();
+  const removeSelectedFavorite = document.getElementById(`${removedDataId}`);
+  removeSelectedFavorite.classList.remove('results-section__card--selected');
 }
 
 if (localStorage.favorites) {
@@ -25,16 +24,17 @@ if (localStorage.favorites) {
     const favoriteListItem = document.createElement('li');
     favoriteListItem.classList.add('favorite');
     const favoriteTitleEl = document.createElement('h2');
+    favoriteTitleEl.classList.add('favorite__title');
     const favoriteTitle = document.createTextNode(series.name);
     favoriteTitleEl.appendChild(favoriteTitle);
 
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${series.img}`);
-    favoriteImg.classList.add('favorite-section__image');
+    favoriteImg.classList.add('favorite__image');
 
     favoriteListItem.appendChild(favoriteTitleEl);
     favoriteListItem.appendChild(favoriteImg);
-    favoriteListItem.setAttribute('id', series.id);
+    favoriteListItem.setAttribute('data-id', series.id);
     favoriteSectionEl.appendChild(favoriteListItem);
 
     const favoriteEraseButton = document.createElement('i');
@@ -56,12 +56,13 @@ function cardClickFavoriteHandler(event) {
     const favoriteListItem = document.createElement('li');
     favoriteListItem.classList.add('favorite');
     const favoriteTitleEl = document.createElement('h2');
+    favoriteTitleEl.classList.add('favorite__title');
     const favoriteTitle = document.createTextNode(event.currentTarget.firstChild.innerHTML);
     favoriteTitleEl.appendChild(favoriteTitle);
 
     const favoriteImg = document.createElement('img');
     favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
-    favoriteImg.classList.add('favorite-section__image');
+    favoriteImg.classList.add('favorite__image');
 
     const favoriteEraseButton = document.createElement('i');
     favoriteEraseButton.classList.add('fas');
@@ -73,11 +74,11 @@ function cardClickFavoriteHandler(event) {
 
     favoriteListItem.appendChild(favoriteTitleEl);
     favoriteListItem.appendChild(favoriteImg);
-    favoriteListItem.setAttribute('id', event.currentTarget.firstChild.id);
+    favoriteListItem.setAttribute('data-id', `${event.currentTarget.id}`);
     favoriteSectionEl.appendChild(favoriteListItem);
 
     const myFavoriteSerie = {
-      id: event.currentTarget.firstChild.id,
+      id: event.currentTarget.id,
       name: event.currentTarget.firstChild.innerHTML,
       img: event.currentTarget.firstChild.nextElementSibling.style.backgroundImage,
     };
@@ -88,23 +89,36 @@ function cardClickFavoriteHandler(event) {
   } else if (event.currentTarget.classList.contains('results-section__card--selected') === true) {
     event.currentTarget.classList.remove('results-section__card--selected');
     
-    const removedId = document.getElementById(`${event.currentTarget.firstChild.id}`);
+    const removedId = document.getElementById(`${event.currentTarget.id}`);
 
     const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
 
     favorites.splice(indexOfRemoved-1, 1);
     localStorage.setItem('favorites', JSON.stringify(favorites));
-    removedId.remove();
+    const favoriteToRemove = document.querySelector(`[data-id='${event.currentTarget.id}']`);
+
+    if (favoriteToRemove) {
+      favoriteToRemove.remove();
+    }
   }
 }
 
 function printSeriesTitle(seriesObject) {
   const seriesCard = document.createElement('li');
   seriesCard.classList.add('results-section__card');
+  seriesCard.setAttribute('id', `${seriesObject.id}`);
+
+  const favoriteList = document.querySelectorAll('.favorite');
+
+  for (const favoriteItem of favoriteList) {
+    if (parseInt(favoriteItem.dataset.id) === seriesObject.id) {
+      seriesCard.classList.add('results-section__card--selected');
+    }
+  }
+
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);
   titleEl.appendChild(title);
-  titleEl.setAttribute('id', `${seriesObject.id}`);
   seriesCard.appendChild(titleEl);
   searchResponseEl.appendChild(seriesCard);
   printSeriesImage(seriesCard, seriesObject);
@@ -112,13 +126,16 @@ function printSeriesTitle(seriesObject) {
 
 function printSeriesImage(seriesCard, seriesObject) {
   const imageEl = document.createElement('img');
-  imageEl.classList.add('results-section__image');
+  imageEl.classList.add('results-card__image');
+
   const defaultImg = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
+
   if (seriesObject.image === null) {
     imageEl.setAttribute('style', `background-image: url(${defaultImg})`);        
   } else {
     imageEl.setAttribute('style', `background-image: url(${seriesObject.image.medium})`);
   }
+
   seriesCard.appendChild(imageEl);
   seriesCard.classList.add('results-section__card');
 

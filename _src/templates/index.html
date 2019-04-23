@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-    
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=500, initial-scale=1">
@@ -10,26 +9,23 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
         <link rel="stylesheet" href="assets/css/main.css">
     </head>
-    
     <body>
         <main class="main-page">
-            <div class="favorite-section">
-              <h2>Mis series favoritas</h2>
-              <ul class="favorite-list"></ul>
-
-            </div>
-            <div class="search__section">
-                <label for="" class="search__label">¿Qué serie vemos hoy?</label>
+            <section class="search__section">
+                <h1 class="search__section__title">¿Qué serie vemos hoy?</h1>
+                <label for="" class="visually-hidden">Introduce el título de la serie</label>
                 <input type="text" class="search__input">
                 <button class="search__button" type="button">Buscar</button>
-            </div>
-            <div class="results-section">
-                <h2>Resultados</h2>
+            </section>
+            <section class="results-section">
+                <h2 class="results-section__title">Resultados</h2>
                 <ul class="results-list"></ul>
-            </div>
+            </section>
+            <section class="favorite-section">
+                <h2 class="favorite-section__title">Mis series favoritas</h2>
+                <ul class="favorite-list"></ul>
+            </section>
         </main>
-        
         <script src="assets/js/main.js"></script>
     </body>
-
 </html>
