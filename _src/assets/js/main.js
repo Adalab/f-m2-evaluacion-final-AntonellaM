@@ -5,7 +5,6 @@ const searchInputEl = document.querySelector('.search__input');
 const searchResponseEl = document.querySelector('.results-list');
 const favoriteSectionEl = document.querySelector('.favorite-list');
 
-let search = '';
 let favorites = [];
 
 function favoriteCloseButton(event) {
@@ -17,6 +16,22 @@ function favoriteCloseButton(event) {
   const removeSelectedFavorite = document.getElementById(`${removedDataId}`);
   if (removeSelectedFavorite){
     removeSelectedFavorite.classList.remove('results-section__card--selected');
+  }
+}
+
+function getFavorites() {
+  const favoriteList = document.querySelectorAll('.favorite');
+  const ids = [];
+  favoriteList.forEach(fav => {
+    ids.push(fav.dataset.id);
+  });
+  return ids;
+}
+
+function checkFavorite(card, favoriteList) {  
+  console.log(favoriteList);
+  if(favoriteList.includes(card.id)) {
+    card.classList.add('results-section__card--selected');
   }
 }
 
@@ -106,28 +121,17 @@ function cardClickFavoriteHandler(event) {
   }
 }
 
-function printSeriesTitle(seriesObject) {
+function createSeriesCard(seriesObject) {
   const seriesCard = document.createElement('li');
   seriesCard.classList.add('results-section__card');
   seriesCard.setAttribute('id', `${seriesObject.id}`);
-
-  const favoriteList = document.querySelectorAll('.favorite');
-
-  for (const favoriteItem of favoriteList) {
-    if (parseInt(favoriteItem.dataset.id) === seriesObject.id) {
-      seriesCard.classList.add('results-section__card--selected');
-    }
-  }
 
   const titleEl = document.createElement('h2');
   const title = document.createTextNode(seriesObject.name);
   titleEl.appendChild(title);
   seriesCard.appendChild(titleEl);
   searchResponseEl.appendChild(seriesCard);
-  printSeriesImage(seriesCard, seriesObject);
-}
 
-function printSeriesImage(seriesCard, seriesObject) {
   const imageEl = document.createElement('img');
   imageEl.classList.add('results-card__image');
 
@@ -141,32 +145,30 @@ function printSeriesImage(seriesCard, seriesObject) {
 
   seriesCard.appendChild(imageEl);
   seriesCard.classList.add('results-section__card');
-
-  const arraySeriesCard = document.querySelectorAll('.results-section__card');
-  
-  for (const card of arraySeriesCard) {
-    card.addEventListener('click', cardClickFavoriteHandler);
-  }
+  return seriesCard;
+  //checkFavorites(seriesCard);
 }
+
 
 function searchSeries(title) {
   fetch(`http://api.tvmaze.com/search/shows?q=${title}`)
     .then(response => response.json())
     .then(function (data) {
       searchResponseEl.innerHTML = '';
-      const titleResultsEl = document.createElement('h2');
-      const titleResults = document.createTextNode('Resultados');
-      titleResultsEl.appendChild(titleResults);
-
+      //guardar el array de favs
+      const favoritesIdsArray = getFavorites();
+      const cards = [];
       for (const serie of data) {
-        printSeriesTitle(serie.show);
+        const card = createSeriesCard(serie.show);
+        cards.push(card);
+        checkFavorite(card, favoritesIdsArray);
       }
+
     });
 }
 
 function searchButtonClickHandler() {
-  search = searchInputEl.value;
-  searchSeries(search);
+  searchSeries(searchInputEl.value);
 }
 
 searchButtonEl.addEventListener('click', searchButtonClickHandler);
