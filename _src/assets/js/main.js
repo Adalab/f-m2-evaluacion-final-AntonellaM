@@ -7,16 +7,16 @@ const favoriteSectionEl = document.querySelector('.favorite-list');
 
 let favorites = [];
 
-function favoriteCloseButton(event) {
+function deleteFavorite(event) {
   const removedDataId = event.currentTarget.parentElement.dataset.id;
   const indexOfRemoved = favorites.findIndex(i => i.id === removedDataId);
   favorites.splice(indexOfRemoved, 1);
-  localStorage.setItem('favorites', JSON.stringify(favorites));
   event.currentTarget.parentElement.remove();
   const removeSelectedFavorite = document.getElementById(`${removedDataId}`);
   if (removeSelectedFavorite){
     removeSelectedFavorite.classList.remove('results-section__card--selected');
   }
+  localStorage.setItem('favorites', JSON.stringify(favorites));
 }
 
 function getFavorites() {
@@ -29,113 +29,48 @@ function getFavorites() {
 }
 
 function checkFavorite(card, favoriteList) {  
-  console.log(favoriteList);
   if(favoriteList.includes(card.id)) {
     card.classList.add('results-section__card--selected');
   }
 }
 
-if (localStorage.favorites) {
-  favorites = JSON.parse(localStorage.getItem('favorites'));
-  for (const series of favorites) {
-    const favoriteListItem = document.createElement('li');
-    favoriteListItem.classList.add('favorite');
-    const favoriteTitleEl = document.createElement('h2');
-    favoriteTitleEl.classList.add('favorite__title');
-    const favoriteTitle = document.createTextNode(series.name);
-    favoriteTitleEl.appendChild(favoriteTitle);
+function createFavoriteCard(object) {
+  const favoriteListItem = document.createElement('li');
+  const favoriteTitleEl = document.createElement('h2');
+  const favoriteImg = document.createElement('img');
+  const favoriteEraseButton = document.createElement('i');
+  const favoriteTitle = document.createTextNode(object.name);
+  
+  favoriteListItem.setAttribute('data-id', object.id);
+  favoriteImg.setAttribute('style', `background-image: ${object.img}`);
+  favoriteImg.classList.add('favorite__image');
+  favoriteListItem.classList.add('favorite');
+  favoriteTitleEl.classList.add('favorite__title');
+  favoriteEraseButton.classList.add('fas');
+  favoriteEraseButton.classList.add('fa-times');
+  favoriteEraseButton.classList.add('fa-sm');
+  favoriteEraseButton.classList.add('favorite-erase');
 
-    const favoriteImg = document.createElement('img');
-    favoriteImg.setAttribute('style', `background-image: ${series.img}`);
-    favoriteImg.classList.add('favorite__image');
+  favoriteListItem.appendChild(favoriteTitleEl);
+  favoriteListItem.appendChild(favoriteImg);
+  favoriteSectionEl.appendChild(favoriteListItem);
+  favoriteTitleEl.appendChild(favoriteTitle);
+  favoriteListItem.appendChild(favoriteEraseButton);
 
-    favoriteListItem.appendChild(favoriteTitleEl);
-    favoriteListItem.appendChild(favoriteImg);
-    favoriteListItem.setAttribute('data-id', series.id);
-    favoriteSectionEl.appendChild(favoriteListItem);
-
-    const favoriteEraseButton = document.createElement('i');
-    favoriteEraseButton.classList.add('fas');
-    favoriteEraseButton.classList.add('fa-times');
-    favoriteEraseButton.classList.add('fa-sm');
-    favoriteEraseButton.classList.add('favorite-erase');
-    favoriteListItem.appendChild(favoriteEraseButton);
-
-    favoriteEraseButton.addEventListener('click', favoriteCloseButton);
-  }
-}
-
-function cardClickFavoriteHandler(event) {
-
-  if (event.currentTarget.classList.contains('results-section__card--selected') === false) {
-    event.currentTarget.classList.add('results-section__card--selected');
-
-    const favoriteListItem = document.createElement('li');
-    favoriteListItem.classList.add('favorite');
-    const favoriteTitleEl = document.createElement('h2');
-    favoriteTitleEl.classList.add('favorite__title');
-    const favoriteTitle = document.createTextNode(event.currentTarget.firstChild.innerHTML);
-    favoriteTitleEl.appendChild(favoriteTitle);
-
-    const favoriteImg = document.createElement('img');
-    favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
-    favoriteImg.classList.add('favorite__image');
-
-    const favoriteEraseButton = document.createElement('i');
-    favoriteEraseButton.classList.add('fas');
-    favoriteEraseButton.classList.add('fa-times');
-    favoriteEraseButton.classList.add('favorite-erase');
-    favoriteListItem.appendChild(favoriteEraseButton);
-
-    favoriteEraseButton.addEventListener('click', favoriteCloseButton);
-
-    favoriteListItem.appendChild(favoriteTitleEl);
-    favoriteListItem.appendChild(favoriteImg);
-    favoriteListItem.setAttribute('data-id', `${event.currentTarget.id}`);
-    favoriteSectionEl.appendChild(favoriteListItem);
-
-    const myFavoriteSerie = {
-      id: event.currentTarget.id,
-      name: event.currentTarget.firstChild.innerHTML,
-      img: event.currentTarget.firstChild.nextElementSibling.style.backgroundImage,
-    };
-
-    favorites.push(myFavoriteSerie);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-
-  } else if (event.currentTarget.classList.contains('results-section__card--selected') === true) {
-    event.currentTarget.classList.remove('results-section__card--selected');
-    
-    const removedId = document.getElementById(`${event.currentTarget.id}`);
-
-    const indexOfRemoved = favorites.findIndex(i => i.id === removedId);
-    console.log(indexOfRemoved);
-
-    favorites.splice(indexOfRemoved, 1);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    const favoriteToRemove = document.querySelector(`[data-id='${event.currentTarget.id}']`);
-
-    if (favoriteToRemove) {
-      favoriteToRemove.remove();
-    }
-  }
+  favoriteEraseButton.addEventListener('click', deleteFavorite);
 }
 
 function createSeriesCard(seriesObject) {
   const seriesCard = document.createElement('li');
+  const titleEl = document.createElement('h2');
+  const imageEl = document.createElement('img');
+  const title = document.createTextNode(seriesObject.name);
+  const defaultImg = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
+
+  seriesCard.classList.add('results-section__card');
+  imageEl.classList.add('results-card__image');
   seriesCard.classList.add('results-section__card');
   seriesCard.setAttribute('id', `${seriesObject.id}`);
-
-  const titleEl = document.createElement('h2');
-  const title = document.createTextNode(seriesObject.name);
-  titleEl.appendChild(title);
-  seriesCard.appendChild(titleEl);
-  searchResponseEl.appendChild(seriesCard);
-
-  const imageEl = document.createElement('img');
-  imageEl.classList.add('results-card__image');
-
-  const defaultImg = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
 
   if (seriesObject.image === null) {
     imageEl.setAttribute('style', `background-image: url(${defaultImg})`);        
@@ -143,27 +78,57 @@ function createSeriesCard(seriesObject) {
     imageEl.setAttribute('style', `background-image: url(${seriesObject.image.medium})`);
   }
 
+  titleEl.appendChild(title);
+  seriesCard.appendChild(titleEl);
+  searchResponseEl.appendChild(seriesCard);
   seriesCard.appendChild(imageEl);
-  seriesCard.classList.add('results-section__card');
   return seriesCard;
-  //checkFavorites(seriesCard);
 }
 
+function cardClickFavoriteHandler(event) {
+
+  if (event.currentTarget.classList.contains('results-section__card--selected') === false) {
+    event.currentTarget.classList.add('results-section__card--selected');
+    const myFavoriteSerie = {
+      id: event.currentTarget.id,
+      name: event.currentTarget.firstChild.innerHTML,
+      img: event.currentTarget.firstChild.nextElementSibling.style.backgroundImage,
+    };
+    createFavoriteCard(myFavoriteSerie);
+    favorites.push(myFavoriteSerie);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+  } else if (event.currentTarget.classList.contains('results-section__card--selected') === true) {
+    event.currentTarget.classList.remove('results-section__card--selected');
+    const removedId = document.getElementById(`${event.currentTarget.id}`);
+    const indexOfRemoved = favorites.findIndex(i => i.id === removedId); 
+    const favoriteToRemove = document.querySelector(`[data-id='${event.currentTarget.id}']`);
+    favorites.splice(indexOfRemoved, 1);
+    if (favoriteToRemove) {
+      favoriteToRemove.remove();
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+}
+
+if (localStorage.favorites) {
+  favorites = JSON.parse(localStorage.getItem('favorites'));
+  for (const series of favorites) {
+    createFavoriteCard(series);
+  }
+}
 
 function searchSeries(title) {
   fetch(`http://api.tvmaze.com/search/shows?q=${title}`)
     .then(response => response.json())
     .then(function (data) {
       searchResponseEl.innerHTML = '';
-      //guardar el array de favs
       const favoritesIdsArray = getFavorites();
-      const cards = [];
       for (const serie of data) {
         const card = createSeriesCard(serie.show);
-        cards.push(card);
+        card.addEventListener('click', cardClickFavoriteHandler);
         checkFavorite(card, favoritesIdsArray);
       }
-
     });
 }
 
