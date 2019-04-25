@@ -1,8 +1,9 @@
 @import 'core/variables';
 @import 'core/mixins';
-
 @import 'components/series-card';
 @import 'components/favorite-card';
+@import 'components/modal';
+
 @import 'layout/main-page';
 
 *, *::before, *::after {
