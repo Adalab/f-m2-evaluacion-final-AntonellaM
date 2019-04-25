@@ -19,6 +19,10 @@ function deleteFavorite(event) {
   localStorage.setItem('favorites', JSON.stringify(favorites));
 }
 
+function closeModalNotification(event) {
+  event.currentTarget.parentElement.classList.add('hidden');
+}
+
 function getFavorites() {
   const favoriteList = document.querySelectorAll('.favorite');
   const ids = [];
@@ -32,6 +36,22 @@ function checkFavorite(card, favoriteList) {
   if(favoriteList.includes(card.id)) {
     card.classList.add('results-section__card--selected');
   }
+}
+
+function createNotification(notificationText) {
+  const modalEl = document.createElement('div');
+  const notification = document.createTextNode(notificationText);
+  const modalCloseButton = document.createElement('i');
+  modalCloseButton.classList.add('fas');
+  modalCloseButton.classList.add('fa-times');
+  modalCloseButton.classList.add('fa-sm');
+  modalCloseButton.classList.add('modal__close-button');
+  modalEl.classList.add('modal');
+  modalEl.appendChild(notification);
+  modalEl.appendChild(modalCloseButton);
+  searchResponseEl.appendChild(modalEl);
+
+  modalCloseButton.addEventListener('click', closeModalNotification);
 }
 
 function createFavoriteCard(object) {
@@ -122,18 +142,27 @@ function searchSeries(title) {
   fetch(`http://api.tvmaze.com/search/shows?q=${title}`)
     .then(response => response.json())
     .then(function (data) {
-      searchResponseEl.innerHTML = '';
-      const favoritesIdsArray = getFavorites();
-      for (const serie of data) {
-        const card = createSeriesCard(serie.show);
-        card.addEventListener('click', cardClickFavoriteHandler);
-        checkFavorite(card, favoritesIdsArray);
+      if (data.length === 0) {
+        createNotification('Tu búsqueda no ha dado ningún resultado, por favor, inténtalo de nuevo con otra serie');
+      } else {
+        searchResponseEl.innerHTML = '';
+        const favoritesIdsArray = getFavorites();
+        for (const serie of data) {
+          const card = createSeriesCard(serie.show);
+          card.addEventListener('click', cardClickFavoriteHandler);
+          checkFavorite(card, favoritesIdsArray);
+        }
       }
     });
 }
 
 function searchButtonClickHandler() {
-  searchSeries(searchInputEl.value);
+
+  if (searchInputEl.value === '') {
+    createNotification('Por favor, introduce una serie en el buscador');
+  } else {
+    searchSeries(searchInputEl.value);  
+  }
 }
 
 searchButtonEl.addEventListener('click', searchButtonClickHandler);
