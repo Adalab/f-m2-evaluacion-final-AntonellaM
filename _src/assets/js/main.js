@@ -4,9 +4,16 @@ const searchButtonEl = document.querySelector('.search__button');
 const searchInputEl = document.querySelector('.search__input');
 const searchResponseEl = document.querySelector('.results-list');
 const favoriteSectionEl = document.querySelector('.favorite-list');
+const buttonLogEl = document.querySelector('.log__button');
 
 let search = '';
 let favorites = [];
+
+function logClickHandler(event) {
+  for (const favorite of favorites) {
+    console.log(favorite.name);
+  }
+}
 
 function favoriteCloseButton(event) {
   const removedDataId = event.currentTarget.parentElement.dataset.id;
@@ -63,7 +70,7 @@ function cardClickFavoriteHandler(event) {
     favoriteTitleEl.appendChild(favoriteTitle);
 
     const favoriteImg = document.createElement('img');
-    favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.firstChild.nextElementSibling.style.backgroundImage}`);
+    favoriteImg.setAttribute('style', `background-image: ${event.currentTarget.querySelector('.results-card__image').style.backgroundImage}`);
     favoriteImg.classList.add('favorite__image');
 
     const favoriteEraseButton = document.createElement('i');
@@ -111,6 +118,8 @@ function printSeriesTitle(seriesObject) {
   seriesCard.classList.add('results-section__card');
   seriesCard.setAttribute('id', `${seriesObject.id}`);
 
+
+
   const favoriteList = document.querySelectorAll('.favorite');
 
   for (const favoriteItem of favoriteList) {
@@ -124,6 +133,22 @@ function printSeriesTitle(seriesObject) {
   titleEl.appendChild(title);
   seriesCard.appendChild(titleEl);
   searchResponseEl.appendChild(seriesCard);
+
+  console.log(seriesObject.status);
+  const seriesStatusEl = document.createElement('p');
+  const seriesStatus = document.createTextNode(`${seriesObject.status}`);
+  seriesStatusEl.appendChild(seriesStatus);
+  seriesCard.appendChild(seriesStatusEl);
+  const seriesGenreEl = document.createElement('ul');
+  seriesCard.appendChild(seriesGenreEl);
+
+
+  for (const genre of seriesObject.genres) {
+    const seriesListEl = document.createElement('li');
+    const seriesGenre = document.createTextNode(genre);
+    seriesGenreEl.appendChild(seriesListEl);
+    seriesListEl.appendChild(seriesGenre);
+  }
   printSeriesImage(seriesCard, seriesObject);
 }
 
@@ -170,3 +195,4 @@ function searchButtonClickHandler() {
 }
 
 searchButtonEl.addEventListener('click', searchButtonClickHandler);
+buttonLogEl.addEventListener('click', logClickHandler);
